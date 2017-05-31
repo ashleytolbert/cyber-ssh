@@ -1,9 +1,13 @@
 \documentclass[11pt]{article}
 
-\usepackage{hyperref, enumitem, times, microtype}
+\usepackage{hyperref, enumitem, times}
 \usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
 
+\urlstyle{rm}
+
 \newcommand{\slim}{\vspace{\baselineskip}}
+
+\usepackage{microtype}
 
 \begin{document}
 
@@ -132,16 +136,62 @@ Engineer at Google.
 
 \noindent \textbf{Riad S.~Wahby} is a doctoral student in computer science,
 advised by Profs.~Winstein and Mazi\`{e}res. He was previously a
-research scientist in the NYU Computer Science department and a
-visiting researcher at the University of Texas at Austin. Before
-entering computer-science research, Wahby spent ten years as a Staff
-Design Engineer building analog and mixed-signal integrated circuits
-at Silicon Labs.
+research scientist in the NYU Computer Science department, a
+visiting researcher at the University of Texas at Austin, and a Staff
+Design Engineer at Silicon Labs.
 
 \section{Proposed Research Agenda}
 
 The government~\cite{cyberframework, nistSSH, trumpeo}.
 
+\subsection{SSH at SLAC: usage in a security-conscious environment}
+
+SLAC is a national laboratory funded by the Department of Energy, and
+subject to cyber security legislation and regulations, to include the
+Federal Information Security Management Act (FISMA). As SLAC is an
+open lab, cyber security policies must balance the need for
+flexibility for scientific research, while managing compliance
+requirements and reducing cyber security risk. A majority of SLAC
+cyber security policies, to include the Remote Access Management
+Policy, Account Management Policy, Access Control Policy, and Audit
+Logging and Monitoring Policy, are based on NIST Special Publication
+800-53~\cite{nist80053} controls. These policies reinforce the notion
+that cyber security is a shared responsibility across all departments:
+cyber security is centrally managed by the Computing Division but
+applies across all lab departments.
+
+SSH use at SLAC is governed by cyber security policies. NIST
+additionally provides guidelines and recommendations around securing
+Secure Shell (SSH) for federal entities in the document NISTIR
+7966~\cite{nistSSH}.
+
+SLAC's network is an enterprise network with a tight perimeter control
+for most protocols using a stateful firewall. Unlike other protocols,
+SSH is broadly allowed to enter through the network perimeter. It
+provides access to science enclaves and experimental facilities.
+
+The scientific group holds a Science DMZ (demilitarized zone). In a
+Science DMZ, the ``equipment, configuration, and security policies are
+optimized for high-performance scientific applications.'' This solves
+a common issue at research labs by creating an environment for high
+performance science applications, including high-volume bulk data
+transfer and remote experiment control. The Science DMZ has no
+stateful firewalls but some router-based access controls.
+
+SLAC monitors the detection of SSH-based attacks using syslog and Bro
+and automatically blocks Internet based hosts participating in these
+attacks.
+
+One issue that SLAC experiences with SSH is limitations with not
+having a centralized mechanism for key management, especially since
+vendor solutions can be expensive and difficult to deploy. SSH
+sessions are also encrypted, which hides traffic and can stall cyber
+security analysis during attacks. To solve this, some national labs
+use \emph{Instrumented SSH}, a modified version of SSH built at
+Lawrence Berkeley Labs, to see the content of SSH sessions and gain
+visibility into encrypted sessions that help to identify
+attacks. Another issue is that syslog logs are not granular enough for
+the detail needed for cyber analysis.
 
 \subsection{Authentication architecture}
 
