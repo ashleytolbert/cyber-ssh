@@ -83,6 +83,84 @@ at Silicon Labs.
 
 The government~\cite{cyberframework, nistSSH, trumpeo}.
 
+
+\subsection{Authentication architecture}
+
+We begin by describing the long-term authentication architecture we
+envision for a hypothetical SSH version~3, then discuss how an
+approximation of this architecture can be shoe-horned into existing
+SSH~2 implementations in the nearer term.  An important principle
+underlying our authentication architecture is a separation of
+server-side authentication mechanisms from the client side
+implementation of those mechanisms.
+
+On the server side, authentication takes place by verifying signatures
+on messages that identify what is being authenticated as unambiguously
+as possible, including at a minimum:
+\begin{itemize}\itemsep=0pt
+\item The public key of the server,
+\item The server's own notion of its human-readable name (which won't
+  necessarily be what the user typed, given host aliases),
+\item The exact command being executed,
+\item A fresh channel identifier derived from a cryptographic hash of
+  a server nonce and session keying material, and
+\item Bounds on other uses of the channel being authenticated (master
+  channel establishment, port forwarding, etc.).
+\end{itemize}
+
+On the client side, the agent protocol must be amenable to numerous
+implementations, including a standard agent process, an agent process
+combined with a hardware token, and, importantly, an agent process
+spread across two or more machines.  The latter architecture is
+particularly important for users who wish to maintain a central log of
+authentication requests.
+
+As an example, consider a user whose agent process signs requests in
+conjunction with a secure server.  The secure server has necessarily
+but not sufficient privileges to authenticate the user.  If the user
+believes her office was physically breached before her screen locked,
+she cannot trust any local logs or process.  However, so long as the
+remote server is not compromised, she can examine the remote server
+logs to discover exactly what commands the intruder authorized on what
+servers.  With visibility across all of a user's different
+authentication requests, an authentication server can run anomaly
+detection and potentially require step-up authentication following
+unusual activity.
+
+Using pro-active key sharing, it is even be possible for the user to
+recover from such a compromise without changing her public key
+everywhere, simply by refreshing the key sharing between her client
+and the server.  That said, we will likely require servers to support
+``multi-key'' setups where an authentication request must be signed by
+multiple keys, because threshold cryptography is not always convenient
+to retrofit to hardware tokens.
+
+Another important aspect of the client-side authentication
+architecture is that clients must know exactly where authentication
+requests originate.  This requires a way of attenuating the privileges
+of a channel to the authentication server when an agent connection is
+forwarded across machines, by recursively annotating authentication
+requests as they are forwarded back to the agent.
+
+\subsubsection{Retrofitting improved authentication to SSH~2}
+
+To get a feel for the deployability of our authentication
+architecture, we will retrofit an approximation of the architecture to
+SSH~2.  This will require a significant re-write of \texttt{ssh-agent}
+and minor modifications to \texttt{ssh} (the client), but can be done
+with no chances to \texttt{sshd} on the server side.
+
+The main idea is that when the \texttt{ssh} client connects to a
+server, rather than initiate the connection itself, it will act as a
+dumb packet relay so that the \texttt{ssh-agent} is actually the
+program establishing the connection.  \texttt{ssh-agent} will drive
+the protocol until it has committed to the command being executed on
+the server.  At that point, there will be a logical connection between
+the agent and the server relayed by the \texttt{ssh} client that
+cannot read the messages because it doesn't have the session key.  The
+agent can then initiate a rekey request so as to hand the logical
+connection endpoint off to the \texttt{ssh} client.
+
 \section{Timeline}
 
 This proposal is for a one-year pilot project while the PIs work to
