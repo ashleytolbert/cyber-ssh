@@ -17,7 +17,7 @@
 
 \section*{Abstract}
 
-From its introduction in 1995, the Secure Shell (SSH) quickly became a
+From its introduction in 1995, the Secure Shell (SSH) has become a
 ubiquitous tool for users to connect securely with networked and
 ``cloud'' servers. But as the importance of cybersecurity has
 increased in the last two decades, and as systems like the Secure Web
@@ -146,25 +146,50 @@ Design Engineer at Silicon Labs.
 
 \section{Proposed Research Agenda}
 
-The government~\cite{cyberframework, nistSSH, trumpeo}.
+SSH~\cite{SSH} is used by tens of millions of people as the \emph{de
+  facto} standard for users to connect security with networked and
+``cloud'' servers. But after more than 20 years of accumulated
+experience, it is a providential time to use what the community has
+learned to build and deploy a next-generation system.
 
-\subsection{SSH at SLAC: usage in a security-conscious environment}
+The proposed collaboration has a simple genesis: Winstein and
+Mazi\`{e}res (the Stanford CS PIs) have both, in the past, developed
+software that improves on facets of SSH.\footnote{Mazi\`{e}res's
+  Rex~\cite{rex} demonstrates that it is possible to build an SSH-like
+  service in a much more modular and secure manner. Winstein's Mosh
+  (mobile shell)~\cite{Mosh} adds roaming, support for suspend/resume
+  and intermittent connectivity, and latency compensation. It has seen
+  wide deployment, especially among software developers and at Silicon
+  Valley companies such as Facebook.} Meanwhile, SLAC represents an
+ideal ``launch customer'' for a practical next-general SSH. SLAC is a
+Department of Energy National Laboratory subject to federal
+cybersecurity regulations~\cite{cyberframework, nist80053, trumpeo}
+including federal policies specific to SSH~\cite{nistSSH}.  The lab's
+scientists are intensive users of SSH, and the SLAC Cyber Security PIs
+have drafted and implemented several policies governing its
+use. Together, we intend to develop and deploy a practical
+next-generation SSH aimed at addressing concerns of
+\textbf{policy-friendliness}, \textbf{security}, and
+\textbf{usability}. We next discuss the use of SSH at SLAC, and then
+outline some of the improvements in our policy-friendly successor.
+
+\subsection{SSH at SLAC: usage in a regulated and policy-driven environment}
 
 SLAC is a national laboratory funded by the Department of Energy, and
-subject to cyber security legislation and regulations, to include the
-Federal Information Security Management Act (FISMA). As SLAC is an
-open lab, cyber security policies must balance the need for
-flexibility for scientific research, while managing compliance
-requirements and reducing cyber security risk. A majority of SLAC
-cyber security policies, to include the Remote Access Management
-Policy, Account Management Policy, Access Control Policy, and Audit
-Logging and Monitoring Policy, are based on NIST Special Publication
-800-53~\cite{nist80053} controls. These policies reinforce the notion
-that cyber security is a shared responsibility across all departments:
-cyber security is centrally managed by the Computing Division but
-applies across all lab departments.
+subject to cybersecurity legislation and regulations, including the
+Federal Information Security Management Act of 2002
+(FISMA)~\cite{fisma}. As SLAC is an open lab, cybersecurity policies
+must balance the need for flexibility for scientific research, while
+managing compliance requirements and reducing cybersecurity risk. A
+majority of SLAC cybersecurity policies, to include the Remote Access
+Management Policy, Account Management Policy, Access Control Policy,
+and Audit Logging and Monitoring Policy, are based on NIST Special
+Publication 800-53~\cite{nist80053} controls. These policies reinforce
+the notion that cybersecurity is a shared responsibility across all
+departments: cybersecurity is centrally managed by the Computing
+Division but applies across all lab departments.
 
-SSH use at SLAC is governed by cyber security policies. NIST
+SSH use at SLAC is governed by cybersecurity policies. NIST
 additionally provides guidelines and recommendations around securing
 Secure Shell (SSH) for federal entities in the document NISTIR
 7966~\cite{nistSSH}.
@@ -189,9 +214,9 @@ attacks.
 One issue that SLAC experiences with SSH is limitations with not
 having a centralized mechanism for key management, especially since
 vendor solutions can be expensive and difficult to deploy. SSH
-sessions are also encrypted, which hides traffic and can stall cyber
-security analysis during attacks. To solve this, some national labs
-use \emph{Instrumented SSH}, a modified version of SSH built at
+sessions are also encrypted, which hides traffic and can stall
+cybersecurity analysis during attacks. To solve this, some national
+labs use \emph{Instrumented SSH}, a modified version of SSH built at
 Lawrence Berkeley Labs, to see the content of SSH sessions and gain
 visibility into encrypted sessions that help to identify
 attacks. Another issue is that syslog logs are not granular enough for
