@@ -1,11 +1,11 @@
-\documentclass[11pt]{article}
+\documentclass[10pt]{article}
 
 \usepackage{hyperref, enumitem, times}
-\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage[top=.9in, bottom=.9in, left=.85in, right=.85in]{geometry}
 
 \urlstyle{rm}
 
-\newcommand{\slim}{\vspace{\baselineskip}}
+\newcommand{\slim}{\vspace{0.5\baselineskip}}
 
 \usepackage{microtype}
 
@@ -144,13 +144,13 @@ research scientist in the NYU Computer Science department, a
 visiting researcher at the University of Texas at Austin, and a Staff
 Design Engineer at Silicon Labs.
 
-\section{Proposed Research Agenda}
+\section{Technical Research Agenda}
 
 SSH~\cite{SSH} is used by tens of millions of people as the \emph{de
   facto} standard for users to connect security with networked and
 ``cloud'' servers. But after more than 20 years of accumulated
-experience, it is a providential time to use what the community has
-learned to build and deploy a next-generation system.
+experience, it is time to use what the community has
+learned to design, build, and deploy a next-generation system.
 
 The proposed collaboration has a simple genesis: Winstein and
 Mazi\`{e}res (the Stanford CS PIs) have both, in the past, developed
@@ -164,51 +164,64 @@ software that improves on facets of SSH.\footnote{Mazi\`{e}res's
 ideal ``launch customer'' for a practical next-general SSH. SLAC is a
 Department of Energy National Laboratory subject to federal
 cybersecurity regulations~\cite{cyberframework, nist80053, trumpeo}
-including federal policies specific to SSH~\cite{nistSSH}.  The lab's
+including a NIST policy specific to SSH~\cite{nistSSH}.  The lab's
 scientists are intensive users of SSH, and the SLAC Cyber Security PIs
 have drafted and implemented several policies governing its
-use. Together, we intend to develop and deploy a practical
-next-generation SSH aimed at addressing concerns of
-\textbf{policy-friendliness}, \textbf{security}, and
-\textbf{usability}. We next discuss the use of SSH at SLAC, and then
-outline some of the improvements in our policy-friendly successor.
+use. Together, we intend to develop and deploy a next-generation SSH
+that will be welcomed at policy-driven and security-conscious
+organizations like SLAC.
+
+We next discuss the policymaking process and practical deployment of
+SSH at SLAC (\S\ref{ss:sshatslac}), then give an outline
+(\S\ref{ss:outline}) of our proposed improvements in a next-generation
+SSH in the three areas of policy-friendliness, security, and
+usability. In subsection~\ref{ss:authentication}, we drill into one
+area of the proposed design: the authentication architecture that
+allows the system to implement practical security policies.
+
+Finally, we describe a ``warmup'' deployment (\S\ref{ss:warmup}) that
+will be our first step in learning more about user needs and
+requirements in this area. Before embarking on a clean-slate redesign
+of SSH, we will improve the \emph{current} version of SSH to add
+enforcement of security policies regarding credential delegation to
+third-party servers (in other words, \emph{secure} ssh-agent
+forwarding) without modifying the remote SSH servers. We believe that
+the experience of attempting to deploy a minimally invasive change to
+SSH at SLAC will teach us about the realities of this area and will
+better inform our development of a clean-slate SSH successor.
 
 \subsection{SSH at SLAC: usage in a regulated and policy-driven environment}
-
+\label{ss:sshatslac}
 SLAC is a national laboratory funded by the Department of Energy, and
 subject to cybersecurity legislation and regulations, including the
 Federal Information Security Management Act of 2002
 (FISMA)~\cite{fisma}. As SLAC is an open lab, cybersecurity policies
 must balance the need for flexibility for scientific research, while
 managing compliance requirements and reducing cybersecurity risk. A
-majority of SLAC cybersecurity policies, to include the Remote Access
-Management Policy, Account Management Policy, Access Control Policy,
-and Audit Logging and Monitoring Policy, are based on NIST Special
-Publication 800-53~\cite{nist80053} controls. These policies reinforce
-the notion that cybersecurity is a shared responsibility across all
-departments: cybersecurity is centrally managed by the Computing
-Division but applies across all lab departments.
-
-SSH use at SLAC is governed by cybersecurity policies. NIST
-additionally provides guidelines and recommendations around securing
-Secure Shell (SSH) for federal entities in the document NISTIR
-7966~\cite{nistSSH}.
+majority of SLAC cybersecurity policies, including the ``Remote Access
+Management Policy,'' the ``Account Management Policy,'' the ``Access
+Control Policy,'' and the ``Audit Logging and Monitoring Policy,'' are
+based on NIST Special Publication 800-53~\cite{nist80053}
+controls. These policies reinforce the notion that cybersecurity is a
+shared responsibility across all departments: cybersecurity is
+centrally managed by the Computing Division but applies across all lab
+departments. NIST additionally provides guidelines and recommendations
+around securing Secure Shell (SSH) for federal entities in the
+document NISTIR 7966~\cite{nistSSH}.
 
 SLAC's network is an enterprise network with a tight perimeter control
 for most protocols using a stateful firewall. Unlike other protocols,
 SSH is broadly allowed to enter through the network perimeter. It
-provides access to science enclaves and experimental facilities.
-
-The scientific group holds a Science DMZ (demilitarized zone). In a
+provides access to science enclaves and experimental facilities. The
+scientific group holds a Science DMZ (demilitarized zone). In a
 Science DMZ, the ``equipment, configuration, and security policies are
 optimized for high-performance scientific applications.'' This solves
 a common issue at research labs by creating an environment for high
 performance science applications, including high-volume bulk data
 transfer and remote experiment control. The Science DMZ has no
-stateful firewalls but some router-based access controls.
-
-SLAC monitors the detection of SSH-based attacks using syslog and Bro
-and automatically blocks Internet based hosts participating in these
+stateful firewalls but some router-based access controls. SLAC
+monitors the detection of SSH-based attacks using syslog and Bro and
+automatically blocks Internet based hosts participating in these
 attacks.
 
 One issue that SLAC experiences with SSH is limitations with not
@@ -220,10 +233,116 @@ labs use \emph{Instrumented SSH}, a modified version of SSH built at
 Lawrence Berkeley Labs, to see the content of SSH sessions and gain
 visibility into encrypted sessions that help to identify
 attacks. Another issue is that syslog logs are not granular enough for
-the detail needed for cyber analysis.
+the detail needed for cyber analysis. Furthermore, with increased use
+of off-premise ``cloud'' services (e.g., GitHub, Bitbucket, AWS), a
+cybersecurity analyst no longer has access to syslog from all services
+that may have been affected by an exposure of a user's credentials.
+This frustrates efforts to understand and mitigate attacks.
+
+\subsection{Outline of improvements in a next-generation SSH}
+\label{ss:outline}
+The proposed next-generation SSH will reflect the accumulated wisdom
+and experience of the last 20 years of SSH usage, focusing on
+\textbf{policy-friendliness}, \textbf{security}, and
+\textbf{usability}. We note that these three areas are necessarily
+intertwined: usability improvements mean that users are less likely to
+circumvent security policies. Improvements that make it possible to
+realize and measure the effect of cybersecurity \emph{policies} are
+connected with core \emph{security} concerns.
+
+\subsubsection{Policy-friendliness}
+%
+\begin{itemize}[topsep=0pt, itemsep=0pt]
+
+\item Provide a global authentic audit log of actions taken under each
+  user's key. This supplements the ``server-based'' model of logging
+  (e.g.~syslog) to reflect the current popularity of cloud services: a
+  user's credentials, if compromised by malware or an attacker, are
+  now as likely to take improper action on a server outside a local
+  administrator's control as inside. We would like users and
+  administrators to be able to answer the question, ``What
+  actions---anywhere---did my identity authorize in the last 20
+  minutes? Has my key been compromised?''
+
+\item Adopt a robust notion of the identity of users and hosts, so
+  that a compromised key may be revoked globally, and different client
+  devices confirm that they agree with one another about each host's
+  identity, and vice versa. Move away from SSH's ``trust on first
+  use'' security model. The intention is to mitigate the ``key
+  juggling'' management challenges at SLAC and similar sites.
+
+\item Ability to search and use audit logs as a tool to develop new
+  cybersecurity policies. We would like administrators to be able to
+  ask ``what-if'' questions in order to make \emph{data-driven}
+  decisions about the effects that new policies relating to identity
+  management, passwords and password reuse, etc., would have on the
+  user base.
+
+\item Enable usable policies for \emph{delegation} of credentials to a
+  remote server. In practice, this means enhancing the current
+  mechanism of ``ssh-agent forwarding,'' so it can be enabled by
+  default. Before approving or denying a request, the agent will learn
+  (a) what host is asking to take an action on the user's behalf, (b)
+  what remote host they want to authenticate to, and (c) the command
+  that will be executed. (In SSH-2, the agent does not learn any of
+  this information and essentially signs a blank check.)  Based on
+  this request, the agent can intelligently execute a policy that
+  specifies which servers are allowed to take which actions on the
+  user's behalf. We will develop a usable user experience for
+  developing such a policy incrementally, e.g.~by prompting the
+  user to approve requests ``once'' or ``always.''
+
+\end{itemize}
+
+\subsubsection{Security improvements}
+%
+\begin{itemize}[topsep=0pt, itemsep=0pt]
+
+\item Improve protocol to allow cleaner abstractions in the
+  implementation and rigid privilege separation, eliminating a
+  category of security vulnerabilities.
+
+\item Make nested interactive sessions secure---if a user connects to
+  server A, and from there to server B, we want the connection to be
+  protected end-to-end (from the user to B), eliminating exposure
+  of the plaintext to A.
+
+\item First-class support for hardware identity tokens (e.g. U2F and
+  Yubikey) originally developed for Web applications.
+
+\end{itemize}
+
+\subsubsection{Usability/performance improvements}
+%
+\begin{itemize}[topsep=0pt, itemsep=0pt]
+
+\item Features currently in Mosh: Connections survive sleep/resume and
+  changes in client or server IP address. On slow connections, the
+  client figures out if the server is likely to echo the user's
+  typing, and if so, it shows the user their typing immediately,
+  without waiting for the server.
+
+\item Intelligent use of the network: route connections over whatever
+  path gives the best performance (IPv4, IPv6, directly, or via a
+  cloud node), dynamically changing the route as necessary. Improve
+  on TCP's performance by maintaining \emph{one} congestion-controlled
+  channel between each pair of hosts, then intelligently subdividing
+  these pipes among flows~\cite{congmgr, ron}.
+
+\item Eliminate runtime use of DNS and other insecure
+  mechanisms. Maintain a dynamic secure mapping of hosts to underlying
+  IPv4 and IPv6 addresses, meaning connections are still possible even
+  if DNS is under attack.
+
+\item Proxy arbitrary traffic: Users might choose to route all their
+  traffic over the new SSH (including Web traffic intended for the
+  outside world), and it handles the routing and congestion-control to
+  a proxy server.
+
+\end{itemize}
 
 \subsection{Authentication architecture}
-
+\label{ss:authentication}
 We begin by describing the long-term authentication architecture we
 envision for a hypothetical SSH version~3, then discuss how an
 approximation of this architecture can be shoe-horned into existing
@@ -234,23 +353,18 @@ implementation of those mechanisms.
 
 On the server side, authentication takes place by verifying signatures
 on messages that identify what is being authenticated as unambiguously
-as possible, including at a minimum:
-\begin{itemize}\itemsep=0pt
-\item The public key of the server,
-\item The server's own notion of its human-readable name (which won't
-  necessarily be what the user typed, given host aliases),
-\item The exact command being executed,
-\item A fresh channel identifier derived from a cryptographic hash of
-  a server nonce and session keying material, and
-\item Bounds on other uses of the channel being authenticated (master
-  channel establishment, port forwarding, etc.).
-\end{itemize}
+as possible, including at a minimum: (a) the public key of the server,
+(b) the server's own notion of its human-readable name, (c) the exact
+command being executed, (d) a fresh channel identifier derived from a
+cryptographic hash of a server nonce and session keying material, and
+(e) bounds on other uses of the channel being authenticated (master
+  channel establishment, port forwarding, etc.
 
 On the client side, the agent protocol must be amenable to numerous
 implementations, including a standard agent process, an agent process
 combined with a hardware token, and, importantly, an agent process
 spread across two or more machines.  The latter architecture is
-particularly important for users who wish to maintain a central log of
+particularly important for users who maintain a central log of
 authentication requests.
 
 As an example, consider a user whose agent process signs requests in
@@ -280,17 +394,20 @@ of a channel to the authentication server when an agent connection is
 forwarded across machines, by recursively annotating authentication
 requests as they are forwarded back to the agent.
 
-\subsubsection{Retrofitting improved authentication to SSH~2}
+\subsection{Warmup deployment: retrofitting improved authentication
+  and delegation to SSH~2}
+\label{ss:warmup}
 
 To get a feel for the deployability of our authentication
 architecture, we will retrofit an approximation of the architecture to
-SSH~2.  This will require a significant re-write of \texttt{ssh-agent}
-and minor modifications to \texttt{ssh} (the client), but can be done
-with no chances to \texttt{sshd} on the server side.
+SSH~2 (the current version of SSH).  This will require a significant
+re-write of \texttt{ssh-agent} and minor modifications to \texttt{ssh}
+(the client), but can be done with no chances to \texttt{sshd} on the
+server side.
 
 The main idea is that when the \texttt{ssh} client connects to a
 server, rather than initiate the connection itself, it will act as a
-dumb packet relay so that the \texttt{ssh-agent} is actually the
+simple packet relay so that the \texttt{ssh-agent} is actually the
 program establishing the connection.  \texttt{ssh-agent} will drive
 the protocol until it has committed to the command being executed on
 the server.  At that point, there will be a logical connection between
@@ -299,51 +416,63 @@ cannot read the messages because it doesn't have the session key.  The
 agent can then initiate a rekey request so as to hand the logical
 connection endpoint off to the \texttt{ssh} client.
 
-\section{Timeline}
+\section{Collaboration, Funding, and Publication Plans}
 
-This proposal is for a one-year pilot project while the PIs work to
-raise money to support a longer-term effort.
-
-\section{Publication Plan}
-
-\section{Budget}
-
-We are asking for support for one Ph.D.~student (Greg Hill), plus
-\$20,000 in equipment to build and deploy twenty measurement/antidote
-boxes. CHAI has agreed to fund Greg Hill's travel to its sites in
-Africa. Year 1 of the pilot project will cost \$97,825 out of gift
-funds.
+\textbf{Collaboration Plan.} Between the Computer Science and SLAC PIs, we will meet monthly,
+alternating between SLAC and the Gates Building, for the duration of
+the project. Over the last several weeks, the Computer Science and
+SLAC Cyber Security PIs have met several times, joined by the student
+participants, in the course of the ``warmup'' project and to prepare
+this proposal. The Computer Science PIs have adjacent lab space in the
+Gates Building and meet more than once per week with the student
+participants.
 
 \slim
 
-\noindent Annual budget:
+\noindent \textbf{Additional Funding Sources.} The PIs intend to solicit long-term funding for this project as part
+of pending multi-PI proposals to SRCCo (a DARPA-industry consortium)
+and the National Science Foundation. An initial submission to SRCCo
+was met with an invitation to submit a full proposal.
+
+\slim
+
+\noindent \textbf{Publication Plan.} All software developed will be released as open-source software.  We
+intend to develop practical software intended for wide deployment on
+multiple operating systems, following in the same steps as the CS PIs'
+prior work on Mosh~\cite{Mosh} and Rex~\cite{rex}.
+
+\section{Annual Budget}
+
+The budget represents support for two Ph.D.~students, plus one month
+of summer salary and 10\% academic-year offset for the CS PIs. (SLAC
+PIs are on 12-month employment.) Student support costs are from the
+``Cost of Research Assistantships, AY16-17 Rates'' departmental
+document.
 
 \slim
 
 \noindent \begin{tabular}{ll|l}
 & \bf Amount & \bf \$ \\
-Student & Academic-year 50\% RA & \$29,163 \\
-        & Summer 90\% RA & \$19,442 \\
+Student $\times 2$ & Academic-year 50\% RA & \$60,048 \\
+        & Summer 90\% RA & \$40,032 \\
 
-Tuition & Academic-year & \$19,094 \\
-        & Summer        & \$1,909 \\
+Tuition $\times 2$ & Academic-year & \$39,348 \\
+        & Summer        & \$3,935 \\
 
-Benefits & Student & \$2,527 \\
+CS PI $\times 2$ & Summer: 1 mo. & \$35,557 \\
+CS PI $\times 2$ & Academic-year: 10\% & \$32,000 \\
 
-Equipment &         & \$20,000 \\
+Benefits & Student & \$5,404 \\
+Benefits & Faculty & \$20,673 \\
+
+Travel &         & \$10,000 \\
 
 \hline
 
-Facility fee & 8\% & \$5,690 \\
-Annual total & & \$97,825 \\
+Facility fee & 8\% & \$16,297 \\
+Annual total & & \$263,294 \\
 
 \end{tabular}
-
-\slim
-
-The Cyber Initiative previously funded part of the development of the
-``self-incentivizing networks'' concept that is one of the mechanisms
-we intend to deploy in the field (June 2015 funding round, \$30,000).
 
 {\footnotesize
 
