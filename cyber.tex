@@ -1,7 +1,7 @@
 \documentclass[10pt]{article}
 
 \usepackage{hyperref, enumitem, times}
-\usepackage[top=.9in, bottom=.9in, left=.85in, right=.85in]{geometry}
+\usepackage[top=.85in, bottom=.85in, left=.85in, right=.85in]{geometry}
 
 \urlstyle{rm}
 
@@ -22,7 +22,7 @@ ubiquitous tool for users to connect securely with networked and
 ``cloud'' servers. But as the importance of cybersecurity has
 increased in the last two decades, and as systems like the Secure Web
 and TLS have seen considerable evolution, SSH has yet to realize
-commensurate improvements in its managability, auditability, or
+commensurate improvements in its manageability, auditability, or
 support of prudent security policies.
 
 This project is a collaboration between PIs at the Stanford Computer
@@ -429,17 +429,37 @@ participants.
 
 \slim
 
-\noindent \textbf{Additional Funding Sources.} The PIs intend to solicit long-term funding for this project as part
-of pending multi-PI proposals to SRCCo (a DARPA-industry consortium)
-and the National Science Foundation. An initial submission to SRCCo
-was met with an invitation to submit a full proposal.
+\noindent \textbf{Additional Funding Sources.} The PIs will seek
+additional and long-term funding for this project as part
+of a pending multi-PI proposal to SRCCo (a DARPA-industry consortium)
+and to the National Science Foundation. A preliminary white-paper submission to SRCCo
+was successful and was met with an invitation to submit a full proposal, due this summer.
 
 \slim
 
-\noindent \textbf{Publication Plan.} All software developed will be released as open-source software.  We
-intend to develop practical software intended for wide deployment on
-multiple operating systems, following in the same steps as the CS PIs'
-prior work on Mosh~\cite{Mosh} and Rex~\cite{rex}.
+\noindent \textbf{Publication Plan.} All software developed will be
+released as open-source software.  We intend to develop practical
+software intended for wide deployment on multiple operating systems,
+following in the same steps as the CS PIs' prior work on
+Mosh~\cite{Mosh} and Rex~\cite{rex}. We will submit the work to
+academic venues such as SIGCOMM, NSDI, OSDI, SOSP, and USENIX
+Security, as well as to practitioner-focused venues such as SREcon,
+IETF, or \texttt{;login:} magazine.
+
+\slim
+
+\noindent \textbf{Timeline.} We have embarked on the ``warmup''
+project, which retrofits the ability to create secure policies for
+credential delegation to the existing SSH system. We intend to have a
+prototype ready to deploy by the end of summer 2017, and to submit a
+research paper to a workshop such as ACM HotNets for early feedback
+from the community. We will deploy the prototype to users of Mosh and
+attempt to deploy it at SLAC and to learn from the experience as we
+draft the ``clean-slate'' SSH redesign. Based on what we know now, we
+expect a beta version can be deployable for testing by summer 2018.
+
+\vspace{-.5\baselineskip}
+\enlargethispage{\baselineskip}
 
 \section{Annual Budget}
 
