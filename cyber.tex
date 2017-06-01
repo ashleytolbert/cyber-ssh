@@ -148,41 +148,43 @@ Design Engineer at Silicon Labs.
 
 SSH~\cite{SSH} is used by tens of millions of people as the \emph{de
   facto} standard for users to connect security with networked and
-``cloud'' servers. But after more than 20 years of accumulated
-experience, it is time to use what the community has
+``cloud'' servers. After more than 20 years of accumulated experience,
+we believe it is time to use what the community has
 learned to design, build, and deploy a next-generation system.
 
-The proposed collaboration has a simple genesis: Winstein and
-Mazi\`{e}res (the Stanford CS PIs) have both, in the past, developed
-software that improves on facets of SSH.\footnote{Mazi\`{e}res's
-  Rex~\cite{rex} demonstrates that it is possible to build an SSH-like
-  service in a much more modular and secure manner. Winstein's Mosh
-  (mobile shell)~\cite{Mosh} adds roaming, support for suspend/resume
-  and intermittent connectivity, and latency compensation. It has seen
-  wide deployment, especially among software developers and at Silicon
-  Valley companies such as Facebook.} Meanwhile, SLAC represents an
-ideal ``launch customer'' for a practical next-general SSH. SLAC is a
-Department of Energy National Laboratory subject to federal
-cybersecurity regulations~\cite{cyberframework, nist80053, trumpeo}
-including a NIST policy specific to SSH~\cite{nistSSH}.  The lab's
-scientists are intensive users of SSH, and the SLAC Cyber Security PIs
-have drafted and implemented several policies governing its
-use. Together, we intend to develop and deploy a next-generation SSH
-that will be welcomed at policy-driven and security-conscious
-organizations like SLAC.
+The proposed collaboration reflects widespread interest in SSH across
+Stanford: Winstein and Mazi\`{e}res (the Stanford CS PIs) have each
+independently developed software that improves on facets of
+SSH.\footnote{Mazi\`{e}res's Rex~\cite{rex} demonstrates that it is
+  possible to build an SSH-like service in a much more modular and
+  secure manner. Winstein's Mosh (mobile shell)~\cite{Mosh} adds
+  roaming, support for suspend/resume and intermittent connectivity,
+  and latency compensation. It has seen wide deployment, especially
+  among software developers and at Silicon Valley companies such as
+  Facebook.} Meanwhile, SLAC represents an ideal ``launch customer''
+for a practical next-general SSH. SLAC is a Department of Energy
+National Laboratory subject to federal cybersecurity
+regulations~\cite{cyberframework, nist80053}, including a NIST policy
+specific to SSH~\cite{nistSSH} and the president's May 2017 Executive
+Order on cybersecurity~\cite{trumpeo}. The lab's scientists are
+intensive users of SSH, and the SLAC Cyber Security PIs have drafted
+and implemented several local policies governing its use. Together, we
+intend to develop and deploy a next-generation SSH that will be
+welcomed at policy-driven and security-conscious organizations like
+SLAC.
 
-We next discuss the policymaking process and practical deployment of
+We first discuss the policymaking process and practical deployment of
 SSH at SLAC (\S\ref{ss:sshatslac}), then give an outline
 (\S\ref{ss:outline}) of our proposed improvements in a next-generation
 SSH in the three areas of policy-friendliness, security, and
-usability. In subsection~\ref{ss:authentication}, we drill into one
+usability. In section~\ref{ss:authentication}, we drill into one
 area of the proposed design: the authentication architecture that
 allows the system to implement practical security policies.
 
 Finally, we describe a ``warmup'' deployment (\S\ref{ss:warmup}) that
 will be our first step in learning more about user needs and
 requirements in this area. Before embarking on a clean-slate redesign
-of SSH, we will improve the \emph{current} version of SSH to add
+of SSH, we will improve the current version of SSH to add
 enforcement of security policies regarding credential delegation to
 third-party servers (in other words, \emph{secure} ssh-agent
 forwarding) without modifying the remote SSH servers. We believe that
@@ -247,8 +249,8 @@ and experience of the last 20 years of SSH usage, focusing on
 \textbf{usability}. We note that these three areas are necessarily
 intertwined: usability improvements mean that users are less likely to
 circumvent security policies. Improvements that make it possible to
-realize and measure the effect of cybersecurity \emph{policies} are
-connected with core \emph{security} concerns.
+develop and implement cybersecurity policies are
+connected with security concerns in general.
 
 \subsubsection{Policy-friendliness}
 %
